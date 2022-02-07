@@ -68,8 +68,6 @@ public class AppSettingsToolsImpl implements AppSettingsTools {
             return field.getAnnotation(AppSettingsDefaultBoolean.class).value();
         } else if (field.isAnnotationPresent(AppSettingsDefaultDouble.class)) {
             return field.getAnnotation(AppSettingsDefaultDouble.class).value();
-        } else if (field.isAnnotationPresent(AppSettingsDefaultFloat.class)) {
-            return field.getAnnotation(AppSettingsDefaultFloat.class);
         } else if (field.isAnnotationPresent(AppSettingsDefaultInt.class)) {
             return field.getAnnotation(AppSettingsDefaultInt.class).value();
         } else if (field.isAnnotationPresent(AppSettingsDefaultLong.class)) {

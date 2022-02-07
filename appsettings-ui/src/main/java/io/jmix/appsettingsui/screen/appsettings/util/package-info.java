@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-@NonNullApi
-package io.jmix.appsettings;
+@Internal
+package io.jmix.appsettingsui.screen.appsettings.util;
 
-import org.springframework.lang.NonNullApi;
+import io.jmix.core.annotation.Internal;
