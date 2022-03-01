@@ -47,9 +47,9 @@ public class AppSettingsImpl implements AppSettings {
 
         T settingsEntity = getAppSettingsEntity(clazz);
 
-        updatePropertyValues(settingsEntityToSave, settingsEntity, getPropertyNames(clazz));
-
-        saveAppSettingsEntity(settingsEntity);
+        if (updatePropertyValues(settingsEntityToSave, settingsEntity, getPropertyNames(clazz))) {
+            saveAppSettingsEntity(settingsEntity);
+        }
     }
 
     protected <T extends AppSettingsEntity> T getAppSettingsEntity(Class<T> clazz) {
@@ -89,16 +89,21 @@ public class AppSettingsImpl implements AppSettings {
      * @param dstSettingsEntity entity to be updated and actually saved
      * @param propertyNames     all non-system properties of {@code T}
      */
-    protected <T extends AppSettingsEntity> void updatePropertyValues(T srcSettingsEntity, T dstSettingsEntity, List<String> propertyNames) {
-        Class<? extends AppSettingsEntity> clazz = srcSettingsEntity.getClass();
+    protected <T extends AppSettingsEntity> boolean updatePropertyValues(T srcSettingsEntity, T dstSettingsEntity, List<String> propertyNames) {
+        boolean isEntityUpdated = false;
+
         for (String propertyName : propertyNames) {
-            Object propertyValue = EntityValues.getValue(srcSettingsEntity, propertyName);
-            Object defaultValue = appSettingsTools.getDefaultPropertyValue(clazz, propertyName);
-            if (propertyValue != null && propertyValue.equals(defaultValue)) {
-                propertyValue = null;
+            Object actualPropertyValue = EntityValues.getValue(srcSettingsEntity, propertyName);
+            Object dataStoreValue = EntityValues.getValue(dstSettingsEntity, propertyName);
+
+            if ((actualPropertyValue != null && !actualPropertyValue.equals(dataStoreValue))
+                    || (dataStoreValue != null && !dataStoreValue.equals(actualPropertyValue))) {
+                EntityValues.setValue(dstSettingsEntity, propertyName, actualPropertyValue);
+                isEntityUpdated = true;
             }
-            EntityValues.setValue(dstSettingsEntity, propertyName, propertyValue);
         }
+
+        return isEntityUpdated;
     }
 
 }
